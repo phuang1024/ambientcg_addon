@@ -16,4 +16,7 @@ class ACG_PT_Main(bpy.types.Panel, BasePanel):
         props = context.scene.acg
         layout = self.layout
 
+        layout.prop(props, "directory")
+        layout.prop(props, "action")
+
         layout.operator("acg.load_files")
