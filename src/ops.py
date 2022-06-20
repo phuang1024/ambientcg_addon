@@ -22,12 +22,12 @@ class ACG_OT_LoadFiles(bpy.types.Operator):
         path = os.path.abspath(bpy.path.abspath(self.filepath))
 
         if os.path.isdir(path):
-            print("from dir")
             maps = get_map_files(os.listdir(path))
+            maps = {k: os.path.join(path, f) for k, f in maps.items()}
             load_material(os.path.basename(path), maps)
 
         elif os.path.isfile(path) and path.endswith(".zip"):
-            print("from zip")
+            pass
 
         else:
             self.report({"ERROR"}, "Please select zip file or directory.")
