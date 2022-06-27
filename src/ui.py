@@ -33,9 +33,9 @@ class ACG_PT_Main(bpy.types.Panel, BasePanel):
         pass
 
 
-class ACG_PT_Archive(bpy.types.Panel, BasePanel):
+class ACG_PT_LoadMats(bpy.types.Panel, BasePanel):
     bl_parent_id = "ACG_PT_Main"
-    bl_label = "Archive"
+    bl_label = "Load Materials"
 
     def draw(self, context):
         prefs = context.preferences.addons[__package__].preferences
@@ -51,7 +51,7 @@ class ACG_PT_Archive(bpy.types.Panel, BasePanel):
 
             # List showing materials found.
             col.template_list("ACG_UL_Textures", "",
-                props, "found_textures", props, "found_textures_index", rows=5)
+                props, "found_textures", props, "found_textures_index", rows=3)
 
             # Buttons below list.
             layout.prop(props, "resolution", expand=True)
@@ -62,7 +62,18 @@ class ACG_PT_Archive(bpy.types.Panel, BasePanel):
 
             layout.operator("acg.load_archive", text="Load Material", icon="IMPORT")
 
+
         else:
             box.label(text="Archive path is not set. See preferences.", icon="ERROR")
 
         layout.separator()
+
+
+class ACG_PT_Archive(bpy.types.Panel, BasePanel):
+    bl_parent_id = "ACG_PT_Main"
+    bl_label = "Archive"
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.operator("acg.install_to_arc", text="Install Files to Archive", icon="IMPORT")

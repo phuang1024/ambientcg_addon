@@ -24,9 +24,10 @@ classes = (
     ACG_Props,
     ACG_OT_SearchTextures,
     ACG_OT_LoadArchive,
-    ACG_OT_LoadFiles,
+    ACG_OT_InstallToArc,
     ACG_UL_Textures,
     ACG_PT_Main,
+    ACG_PT_LoadMats,
     ACG_PT_Archive,
 )
 

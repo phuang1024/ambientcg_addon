@@ -39,7 +39,9 @@ class ACG_OT_SearchTextures(bpy.types.Operator):
                         textures[name] = ([], path)
                     textures[name][0].append(res)
 
-        for name, (res, path) in textures.items():
+        for name in sorted(textures.keys()):
+            res, path = textures[name]
+
             p = props.found_textures.add()
             p.name = name
             p.res = " ".join(str(r) for r in sorted(res))
@@ -81,29 +83,29 @@ class ACG_OT_LoadArchive(bpy.types.Operator):
         if props.file_action == "0" and platform.system() == "Windows":
             self.report({"ERROR"}, "Cannot create symlink on Windows.")
             return {"CANCELLED"}
+
         if props.file_action in ("0", "1") and os.path.exists(local_dir):
-            self.report({"ERROR"}, "Local directory already exists.")
-            return {"CANCELLED"}
+            self.report({"WARNING"}, "Local directory already exists, not updating local copy.")
+        else:
+            if props.file_action == "0":
+                os.symlink(path, local_dir)
+                path = local_dir
+            elif props.file_action == "1":
+                shutil.copytree(path, local_dir)
+                path = local_dir
+            elif props.file_action == "2":
+                pass
 
-        if props.file_action == "0":
-            os.symlink(path, local_dir)
-            path = local_dir
-        elif props.file_action == "1":
-            shutil.copytree(path, local_dir)
-            path = local_dir
-        elif props.file_action == "2":
-            pass
-
-        do_action(tex.name, path, props.action, self.report)
+        do_action(basename, path, props.action, self.report)
 
         return {"FINISHED"}
 
 
-class ACG_OT_LoadFiles(bpy.types.Operator):
-    bl_idname = "acg.load_files"
-    bl_label = "Load From Files"
-    bl_description = "Load material from images or zip."
-    bl_options = {"REGISTER", "UNDO"}
+class ACG_OT_InstallToArc(bpy.types.Operator):
+    bl_idname = "acg.install_to_arc"
+    bl_label = "Install to Archive"
+    bl_description = "Copy selected material to archive."
+    bl_options = {"REGISTER"}
 
     filepath: StringProperty(subtype="FILE_PATH")
 
@@ -112,10 +114,12 @@ class ACG_OT_LoadFiles(bpy.types.Operator):
         return {"RUNNING_MODAL"}
 
     def execute(self, context):
+        prefs = context.preferences.addons[__package__].preferences
         props = context.scene.acg
 
         path = os.path.abspath(bpy.path.abspath(self.filepath))
-        name = os.path.basename(path).replace(".zip", "")
+        # Remove file extension and "-JPG", "-PNG"
+        name = os.path.basename(path).replace(".zip", "").rsplit("-", 1)[0]
 
         if os.path.exists(path):
             if os.path.isfile(path) and path.endswith(".zip"):
@@ -128,7 +132,7 @@ class ACG_OT_LoadFiles(bpy.types.Operator):
                     f.extractall(tmpdir)
                 path = tmpdir
 
-            do_action(name, path, props.action, self.report)
+            shutil.copytree(path, os.path.join(prefs.arcpath, name))
 
         else:
             self.report({"ERROR"}, "Please select zip file or directory.")

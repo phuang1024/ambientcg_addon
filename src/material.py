@@ -56,7 +56,7 @@ def create_node_group(name, maps):
     tree.inputs[1].default_value = 1
     tree.inputs[2].default_value = 0
     tree.inputs[3].default_value = 1
-    tree.inputs[4].default_value = 0.1
+    tree.inputs[4].default_value = 0.04
     for i in range(1, 5):
         tree.inputs[i].min_value = 0
         tree.inputs[i].max_value = 1
