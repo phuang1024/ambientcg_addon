@@ -1,3 +1,5 @@
+import platform
+
 import bpy
 from bpy.props import *
 
@@ -24,7 +26,6 @@ class ACG_Texture(bpy.types.PropertyGroup):
     Has a name, directory path, and available resolutions.
     """
     name: StringProperty()
-    path: StringProperty()
     res: StringProperty()  # Space separated list of resolutions.
 
 
@@ -53,11 +54,31 @@ class ACG_Props(bpy.types.PropertyGroup):
         name="Action",
         description="What to do with selected textures.",
         items=(
-            ("0", "Node Group", "Create node group of material."),
-            ("1", "Material", "Create but don't apply material datablock."),
-            ("2", "Apply to Active", "Apply material to active material slot."),
-            ("3", "Apply to New", "Apply material to new material slot."),
-        )
+            ("0", "Create Node Group", "Create node group of material."),
+            ("1", "Create Material", "Create but don't apply material datablock."),
+            ("2", "Apply to Active Slot", "Apply material to active material slot."),
+            ("3", "Apply to New Slot", "Apply material to new material slot."),
+        ),
+        default="2",
+    )
+
+    file_action: EnumProperty(
+        name="File Action",
+        description="How to handle files.",
+        items=(
+            ("0", "Symlink to Project",
+                "Create a symlink from the current directory to the archive."),
+            ("1", "Copy to Project", "Copy from archive to the current directory."),
+            ("2", "Reference Archive", "Load images referenced to the archive."),
+        ),
+        default="1" if platform.system() == "Windows" else "0",
+    )
+
+    copy_dir: StringProperty(
+        name="Copy Directory",
+        description="Directory to copy files to.",
+        subtype="DIR_PATH",
+        default="//",
     )
 
     # Internal use

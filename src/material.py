@@ -146,7 +146,7 @@ def create_material(name):
 
     shader = tree.nodes.new("ShaderNodeGroup")
     shader.node_tree = bpy.data.node_groups[name]
-    shader.location = (200, 0)
+    shader.location = (100, 0)
 
     tree.links.new(output.inputs[0], shader.outputs[0])
 

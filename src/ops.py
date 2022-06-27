@@ -1,5 +1,7 @@
 import os
+import platform
 import random
+import shutil
 import tempfile
 from zipfile import ZipFile
 
@@ -40,10 +42,59 @@ class ACG_OT_SearchTextures(bpy.types.Operator):
         for name, (res, path) in textures.items():
             p = props.found_textures.add()
             p.name = name
-            p.path = path
             p.res = " ".join(str(r) for r in sorted(res))
 
         refresh_icons({n: i[1] for n, i in textures.items()})
+
+        return {"FINISHED"}
+
+
+class ACG_OT_LoadArchive(bpy.types.Operator):
+    bl_idname = "acg.load_archive"
+    bl_label = "Load From Archive"
+    bl_description = "Load textures from archive."
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        prefs = context.preferences.addons[__package__].preferences
+        props = context.scene.acg
+
+        textures = props.found_textures
+        index = props.found_textures_index
+        res = props.resolution
+
+        # Validate settings
+        if index < 0 or index >= len(textures):
+            self.report({"ERROR"}, "Invalid texture selected.")
+            return {"CANCELLED"}
+        if not res.isdigit():
+            self.report({"ERROR"}, "Invalid resolution selected.")
+            return {"CANCELLED"}
+
+        res = int(res)
+        tex = textures[index]
+        basename = f"{tex.name}_{res}K"
+        path = os.path.join(prefs.arcpath, basename)
+        local_dir = os.path.join(bpy.path.abspath(props.copy_dir), basename)
+
+        # More validate settings
+        if props.file_action == "0" and platform.system() == "Windows":
+            self.report({"ERROR"}, "Cannot create symlink on Windows.")
+            return {"CANCELLED"}
+        if props.file_action in ("0", "1") and os.path.exists(local_dir):
+            self.report({"ERROR"}, "Local directory already exists.")
+            return {"CANCELLED"}
+
+        if props.file_action == "0":
+            os.symlink(path, local_dir)
+            path = local_dir
+        elif props.file_action == "1":
+            shutil.copytree(path, local_dir)
+            path = local_dir
+        elif props.file_action == "2":
+            pass
+
+        do_action(tex.name, path, props.action, self.report)
 
         return {"FINISHED"}
 

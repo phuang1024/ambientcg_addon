@@ -22,12 +22,20 @@ class BasePanel:
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "material"
-    bl_options = {"DEFAULT_CLOSED"}
 
 
 class ACG_PT_Main(bpy.types.Panel, BasePanel):
     bl_idname = "ACG_PT_Main"
     bl_label = "AmbientCG Utils"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw(self, context):
+        pass
+
+
+class ACG_PT_Archive(bpy.types.Panel, BasePanel):
+    bl_parent_id = "ACG_PT_Main"
+    bl_label = "Archive"
 
     def draw(self, context):
         prefs = context.preferences.addons[__package__].preferences
@@ -47,6 +55,12 @@ class ACG_PT_Main(bpy.types.Panel, BasePanel):
 
             # Buttons below list.
             layout.prop(props, "resolution", expand=True)
+            layout.prop(props, "action")
+            layout.prop(props, "file_action")
+            if props.file_action in ("0", "1"):
+                layout.prop(props, "copy_dir", text="Folder")
+
+            layout.operator("acg.load_archive", text="Load Material", icon="IMPORT")
 
         else:
             box.label(text="Archive path is not set. See preferences.", icon="ERROR")
