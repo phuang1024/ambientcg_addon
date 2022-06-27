@@ -26,7 +26,7 @@ class BasePanel:
 
 class ACG_PT_Main(bpy.types.Panel, BasePanel):
     bl_idname = "ACG_PT_Main"
-    bl_label = "AmbientCG Utils"
+    bl_label = "AmbientCG"
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):

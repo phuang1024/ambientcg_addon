@@ -122,7 +122,7 @@ class ACG_OT_LoadFiles(bpy.types.Operator):
                 # Extract zip and set path to tmp dir.
                 tmp = tempfile.gettempdir()
                 rand = random.randint(0, 1e9)
-                tmpdir = os.path.join(tmp, f"ambientcg_utils_{rand}")
+                tmpdir = os.path.join(tmp, f"ambientcg_addon_{rand}")
                 os.makedirs(tmpdir)
                 with ZipFile(path, "r") as f:
                     f.extractall(tmpdir)
