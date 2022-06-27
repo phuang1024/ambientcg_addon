@@ -2,11 +2,11 @@ bl_info = {
     "name": "AmbientCG",
     "description": "Utilities for using AmbientCG assets.",
     "author": "Patrick Huang",
-    "version": (0, 0, 1),
+    "version": (0, 0, 2),
     "blender": (2, 80, 0),
     "location": "Properties > Material > AmbientCG Utils",
-    "doc_url": "https://github.com/phuang1024/ambientcg_addon",
-    "bug_url": "https://github.com/phuang1024/ambientcg_addon/issues",
+    "doc_url": "https://github.com/phuang1024/ambientcg_addon/wiki",
+    "tracker_url": "https://github.com/phuang1024/ambientcg_addon/issues",
     "category": "Material",
 }
 

@@ -21,7 +21,7 @@ def refresh_icons(textures):
     """
     global texture_icons
     if texture_icons is not None:
-        remove_icons()
+        unregister_icons()
 
     texture_icons = bpy.utils.previews.new()
     for name, directory in textures.items():
