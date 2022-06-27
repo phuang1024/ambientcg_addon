@@ -10,7 +10,6 @@ class ACG_UL_Textures(bpy.types.UIList):
     Drawer for texture choices in the UI.
     """
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        print(item.name, item.path, item.res)
         tex_icon = get_tex_icon(item.name)
         icon_id = icon if tex_icon is None else tex_icon.icon_id
         layout.label(text=item.name, icon_value=icon_id)
@@ -35,10 +34,9 @@ class ACG_PT_Main(bpy.types.Panel, BasePanel):
         props = context.scene.acg
         layout = self.layout
 
-        box = layout.box()
-        col = box.column(align=True)
-
         if os.path.isdir(prefs.arcpath):
+            col = layout.column(align=True)
+
             # Buttons above list.
             row = col.row(align=True)
             row.operator("acg.search_textures", text="Refresh", icon="FILE_REFRESH")
@@ -47,5 +45,10 @@ class ACG_PT_Main(bpy.types.Panel, BasePanel):
             col.template_list("ACG_UL_Textures", "",
                 props, "found_textures", props, "found_textures_index", rows=5)
 
+            # Buttons below list.
+            layout.prop(props, "resolution", expand=True)
+
         else:
-            col.label(text="Archive path is not set. See preferences.", icon="ERROR")
+            box.label(text="Archive path is not set. See preferences.", icon="ERROR")
+
+        layout.separator()
