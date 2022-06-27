@@ -12,14 +12,19 @@ bl_info = {
 
 import bpy
 
-from .ops import ACG_OT_LoadFiles
-from .props import ACGProps
-from .ui import ACG_PT_Main
+from .icon import unregister_icons
+from .ops import *
+from .props import *
+from .ui import *
 
 
 classes = (
-    ACGProps,
+    ACG_Texture,
+    ACG_Prefs,
+    ACG_Props,
+    ACG_OT_SearchTextures,
     ACG_OT_LoadFiles,
+    ACG_UL_Textures,
     ACG_PT_Main,
 )
 
@@ -27,11 +32,12 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.types.Scene.acg = bpy.props.PointerProperty(type=ACGProps)
+    bpy.types.Scene.acg = bpy.props.PointerProperty(type=ACG_Props)
 
 def unregister():
-    for cls in classes:
+    for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
+    unregister_icons()
     del bpy.types.Scene.acg
 
 

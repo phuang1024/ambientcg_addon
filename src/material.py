@@ -167,7 +167,7 @@ def do_action(name, path, action, report):
         # Create node group
         if name in bpy.data.node_groups:
             if action == 0:
-                report({"WARNING"}, f"Node group {name} already exists.")
+                report({"WARNING"}, f"Node group {name} already exists, skipping.")
         else:
             create_node_group(name, maps)
 
@@ -175,7 +175,7 @@ def do_action(name, path, action, report):
         # Create material
         if name in bpy.data.materials:
             if action == 1:
-                report({"WARNING"}, f"Material {name} already exists.")
+                report({"WARNING"}, f"Material {name} already exists, skipping.")
         else:
             create_material(name)
 
