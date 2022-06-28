@@ -9,12 +9,12 @@ def get_resolutions(self, context):
     Used by EnumProperty "resolution" in props.
     Returns options for selected texture.
     """
-    index = context.scene.acg.found_textures_index
-    if index >= len(context.scene.acg.found_textures):
+    index = context.scene.acg.arc_textures_index
+    if index >= len(context.scene.acg.arc_textures):
         return []
 
     items = []
-    for res in context.scene.acg.found_textures[index].res.split():
+    for res in context.scene.acg.arc_textures[index].res.split():
         items.append((res, f"{res}K", f"{res}K resolution"))
 
     return items
@@ -81,6 +81,12 @@ class ACG_Props(bpy.types.PropertyGroup):
         default="//",
     )
 
+    ui_options: BoolProperty(
+        name="Show More Options",
+        description="Show more options.",
+        default=False,
+    )
+
     # Internal use
-    found_textures: CollectionProperty(type=ACG_Texture)
-    found_textures_index: IntProperty()
+    arc_textures: CollectionProperty(type=ACG_Texture)
+    arc_textures_index: IntProperty()

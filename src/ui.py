@@ -45,23 +45,28 @@ class ACG_PT_LoadMats(bpy.types.Panel, BasePanel):
         if os.path.isdir(prefs.arcpath):
             col = layout.column(align=True)
 
-            # Buttons above list.
+            # Above list.
             row = col.row(align=True)
             row.operator("acg.search_textures", text="Refresh", icon="FILE_REFRESH")
 
             # List showing materials found.
             col.template_list("ACG_UL_Textures", "",
-                props, "found_textures", props, "found_textures_index", rows=3)
-
-            # Buttons below list.
+                props, "arc_textures", props, "arc_textures_index", rows=3)
             layout.prop(props, "resolution", expand=True)
-            layout.prop(props, "action")
-            layout.prop(props, "file_action")
-            if props.file_action in ("0", "1"):
-                layout.prop(props, "copy_dir", text="Folder")
+
+            # Below list.
+            col = layout.column(align=True)
+            col.prop(props, "ui_options", toggle=True,
+                icon="TRIA_DOWN" if props.ui_options else "TRIA_RIGHT")
+
+            if props.ui_options:
+                box = col.box()
+                box.prop(props, "action")
+                box.prop(props, "file_action")
+                if props.file_action in ("0", "1"):
+                    box.prop(props, "copy_dir", text="Folder")
 
             layout.operator("acg.load_archive", text="Load Material", icon="IMPORT")
-
 
         else:
             box.label(text="Archive path is not set. See preferences.", icon="ERROR")

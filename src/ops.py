@@ -15,7 +15,7 @@ from .material import do_action
 class ACG_OT_SearchTextures(bpy.types.Operator):
     """
     Search for textures in archive.
-    Stores results in scene.acg.found_textures.
+    Stores results in scene.acg.arc_textures.
     """
     bl_idname = "acg.search_textures"
     bl_label = "Search"
@@ -25,7 +25,7 @@ class ACG_OT_SearchTextures(bpy.types.Operator):
     def execute(self, context):
         prefs = context.preferences.addons[__package__].preferences
         props = context.scene.acg
-        props.found_textures.clear()
+        props.arc_textures.clear()
 
         textures = {}  # Map of {name: (resolutions, path)}
         for f in os.listdir(prefs.arcpath):
@@ -42,7 +42,7 @@ class ACG_OT_SearchTextures(bpy.types.Operator):
         for name in sorted(textures.keys()):
             res, path = textures[name]
 
-            p = props.found_textures.add()
+            p = props.arc_textures.add()
             p.name = name
             p.res = " ".join(str(r) for r in sorted(res))
 
@@ -61,8 +61,8 @@ class ACG_OT_LoadArchive(bpy.types.Operator):
         prefs = context.preferences.addons[__package__].preferences
         props = context.scene.acg
 
-        textures = props.found_textures
-        index = props.found_textures_index
+        textures = props.arc_textures
+        index = props.arc_textures_index
         res = props.resolution
 
         # Validate settings
@@ -78,6 +78,7 @@ class ACG_OT_LoadArchive(bpy.types.Operator):
         basename = f"{tex.name}_{res}K"
         path = os.path.join(prefs.arcpath, basename)
         local_dir = os.path.join(bpy.path.abspath(props.copy_dir), basename)
+        os.makedirs(local_dir, exist_ok=True)
 
         # More validate settings
         if props.file_action == "0" and platform.system() == "Windows":
