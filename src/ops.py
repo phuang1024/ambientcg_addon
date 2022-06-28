@@ -126,8 +126,10 @@ class ACG_OT_LoadArchive(bpy.types.Operator):
         tex = textures[index]
         basename = f"{tex.name}_{res}K"
         path = os.path.join(prefs.arcpath, basename)
-        local_dir = os.path.join(bpy.path.abspath(props.copy_dir), basename)
-        os.makedirs(local_dir, exist_ok=True)
+
+        copy_dir = bpy.path.abspath(props.copy_dir)
+        local_dir = os.path.join(copy_dir, basename)
+        os.makedirs(copy_dir, exist_ok=True)
 
         # More validate settings
         if props.file_action == "0" and platform.system() == "Windows":
