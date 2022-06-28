@@ -23,12 +23,15 @@ classes = (
     ACG_Prefs,
     ACG_Props,
     ACG_OT_SearchTextures,
+    ACG_OT_QueryTextures,
     ACG_OT_LoadArchive,
     ACG_OT_InstallToArc,
-    ACG_UL_Textures,
+    ACG_UL_ArcTextures,
+    ACG_UL_QueryTextures,
     ACG_PT_Main,
     ACG_PT_LoadMats,
     ACG_PT_Archive,
+    ACG_PT_Website,
 )
 
 

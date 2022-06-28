@@ -50,6 +50,12 @@ class ACG_Props(bpy.types.PropertyGroup):
         items=get_resolutions,
     )
 
+    ui_options: BoolProperty(
+        name="Show More Options",
+        description="Show more options.",
+        default=False,
+    )
+
     action: EnumProperty(
         name="Action",
         description="What to do with selected textures.",
@@ -81,12 +87,26 @@ class ACG_Props(bpy.types.PropertyGroup):
         default="//",
     )
 
-    ui_options: BoolProperty(
+    query_options: BoolProperty(
         name="Show More Options",
         description="Show more options.",
         default=False,
     )
 
+    query_limit: IntProperty(
+        name="Query Limit",
+        description="Max number of textures to query.",
+        default=20,
+        min=1,
+        max=100,
+    )
+
     # Internal use
+
+    # Textures from the archive.
     arc_textures: CollectionProperty(type=ACG_Texture)
     arc_textures_index: IntProperty()
+
+    # Textures from website query.
+    query_textures: CollectionProperty(type=ACG_Texture)
+    query_textures_index: IntProperty()

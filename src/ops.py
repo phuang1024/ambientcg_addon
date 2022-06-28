@@ -1,6 +1,7 @@
 import os
 import platform
 import random
+import requests
 import shutil
 import tempfile
 from zipfile import ZipFile
@@ -10,6 +11,8 @@ from bpy.props import *
 
 from .icon import refresh_icons
 from .material import do_action
+
+REQUEST_ENDPOINT = "https://ambientcg.com/api/v2/full_json"
 
 
 class ACG_OT_SearchTextures(bpy.types.Operator):
@@ -47,6 +50,52 @@ class ACG_OT_SearchTextures(bpy.types.Operator):
             p.res = " ".join(str(r) for r in sorted(res))
 
         refresh_icons({n: i[1] for n, i in textures.items()})
+
+        return {"FINISHED"}
+
+
+class ACG_OT_QueryTextures(bpy.types.Operator):
+    """
+    Search for textures from website.
+    Stores results in scene.acg.query_textures.
+    """
+    bl_idname = "acg.query_textures"
+    bl_label = "Search"
+    bl_description = "Search for textures from the website."
+    bl_options = {"REGISTER"}
+
+    def execute(self, context):
+        prefs = context.preferences.addons[__package__].preferences
+        props = context.scene.acg
+        props.query_textures.clear()
+
+        r = requests.get(
+            REQUEST_ENDPOINT,
+            params={
+                "type": "Material",
+                "include": "downloadData,previewData",
+                "limit": props.query_limit,
+            },
+            headers={"User-Agent": "blah"}
+        )
+        if r.status_code == 200:
+            data = r.json()
+
+            for asset in data["foundAssets"]:
+                downloads = asset["downloadFolders"]["default"]["downloadFiletypeCategories"] \
+                    ["zip"]["downloads"]
+
+                ress = []
+                for info in downloads:
+                    res = int(info["attribute"].split("-")[0][:-1])
+                    ress.append(res)
+
+                p = props.query_textures.add()
+                p.name = asset["assetId"]
+                p.res = " ".join(map(str, sorted(ress)))
+
+        else:
+            self.report({"ERROR"}, "Failed to query website.")
 
         return {"FINISHED"}
 
